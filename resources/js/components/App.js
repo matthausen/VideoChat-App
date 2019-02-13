@@ -3,31 +3,36 @@ import ReactDOM from 'react-dom';
 import MediaHandler from '../MediaHandler';
 import Pusher from 'pusher-js';
 import Peer from 'simple-peer';
+/* Pusher is a WebRTC service */
 
 const APP_KEY = 'cc15caa1b51c06c5138b';
 
 export default class App extends Component {
     constructor() {
+        /* Super() is used in constructor to call the parent object methods */
         super();
-
+        /* Define the state */
         this.state = {
             hasMedia: false,
             otherUserId: null
         };
-
+        /* Define main objects */
         this.user = window.user;
         this.user.stream = null;
         this.peers = {};
-
         this.mediaHandler = new MediaHandler();
         this.setupPusher();
-
         this.callTo = this.callTo.bind(this);
         this.setupPusher = this.setupPusher.bind(this);
         this.startPeer = this.startPeer.bind(this);
     }
-
+    /* ComponentWillMount is called only once in the component lifecycle efore the component is rendered
+    * It is used to assess the components props
+     */
     componentWillMount() {
+        /* If permission for caera and mic have been granted, set hasMedia to true
+        * Play the video
+         */
         this.mediaHandler.getPermissions()
             .then((stream) => {
                 this.setState({hasMedia: true});
@@ -60,7 +65,7 @@ export default class App extends Component {
         this.channel.bind(`client-signal-${this.user.id}`, (signal) => {
             let peer = this.peers[signal.userId];
 
-            // if peer is not already exists, we got an incoming call
+            // if peer does not already exists, we got an incoming call
             if(peer === undefined) {
                 this.setState({otherUserId: signal.userId});
                 peer = this.startPeer(signal.userId, false);
@@ -114,7 +119,9 @@ export default class App extends Component {
     render() {
         return (
             <div className="App">
-                {[1,2,3,4].map((userId) => {
+            {/* Here I need to import user id from sqlite db
+            * for example: */}
+                {[this.user.name,2,3,4].map((userId) => {
                     return this.user.id !== userId ? <button key={userId} onClick={() => this.callTo(userId)}>Call {userId}</button> : null;
                 })}
 

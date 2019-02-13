@@ -79320,6 +79320,8 @@ function _assertThisInitialized(self) { if (self === void 0) { throw new Referen
 
 
 
+/* Pusher is a WebRTC service */
+
 var APP_KEY = 'cc15caa1b51c06c5138b';
 
 var App =
@@ -79332,11 +79334,16 @@ function (_Component) {
 
     _classCallCheck(this, App);
 
+    /* Super() is used in constructor to call the parent object methods */
     _this = _possibleConstructorReturn(this, _getPrototypeOf(App).call(this));
+    /* Define the state */
+
     _this.state = {
       hasMedia: false,
       otherUserId: null
     };
+    /* Define main objects */
+
     _this.user = window.user;
     _this.user.stream = null;
     _this.peers = {};
@@ -79349,12 +79356,19 @@ function (_Component) {
     _this.startPeer = _this.startPeer.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     return _this;
   }
+  /* ComponentWillMount is called only once in the component lifecycle efore the component is rendered
+  * It is used to assess the components props
+   */
+
 
   _createClass(App, [{
     key: "componentWillMount",
     value: function componentWillMount() {
       var _this2 = this;
 
+      /* If permission for caera and mic have been granted, set hasMedia to true
+      * Play the video
+       */
       this.mediaHandler.getPermissions().then(function (stream) {
         _this2.setState({
           hasMedia: true
@@ -79388,7 +79402,7 @@ function (_Component) {
       });
       this.channel = this.pusher.subscribe('presence-video-channel');
       this.channel.bind("client-signal-".concat(this.user.id), function (signal) {
-        var peer = _this3.peers[signal.userId]; // if peer is not already exists, we got an incoming call
+        var peer = _this3.peers[signal.userId]; // if peer does not already exists, we got an incoming call
 
         if (peer === undefined) {
           _this3.setState({
@@ -79451,7 +79465,7 @@ function (_Component) {
 
       return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "App"
-      }, [1, 2, 3, 4].map(function (userId) {
+      }, [this.user.name, 2, 3, 4].map(function (userId) {
         return _this5.user.id !== userId ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
           key: userId,
           onClick: function onClick() {
